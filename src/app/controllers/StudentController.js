@@ -23,7 +23,7 @@ class StudentController {
     }
 
     const student = await Student.create(req.body);
-    return res.json(student);
+    return res.status(201).json(student);
   }
 
   async update(req, res) {
@@ -44,12 +44,7 @@ class StudentController {
       (await Yup.number()
         .integer()
         .positive()
-        .isValid(student_id)) &&
-      (await Student.findOne({
-        where: {
-          id: student_id,
-        },
-      }));
+        .isValid(student_id)) && (await Student.findByPk(student_id));
 
     if (!student) return res.status(404).json({ error: 'Resource not found' });
 
