@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import * as isUUID from 'is-uuid';
 import Student from '@/app/models/Student';
 
 class StudentController {
@@ -42,7 +41,10 @@ class StudentController {
 
     const { student_id } = req.params;
     const student =
-      isUUID.v4(student_id) &&
+      (await Yup.number()
+        .integer()
+        .positive()
+        .isValid(student_id)) &&
       (await Student.findOne({
         where: {
           id: student_id,
