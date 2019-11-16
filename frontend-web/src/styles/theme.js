@@ -1,3 +1,9 @@
+import { darken } from 'polished';
+
+const primary = '#FF0061';
 export default {
-  primary: '#FF0061',
+  primary,
+  dark: {
+    primary: darken(0.08, primary),
+  },
 };

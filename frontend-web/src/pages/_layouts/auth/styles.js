@@ -34,6 +34,7 @@ export const Content = styled.div`
       color: #444;
       text-align: left;
       width: 100%;
+      margin-top: 15px;
     }
 
     input {
@@ -41,10 +42,16 @@ export const Content = styled.div`
       border: 1px solid #ddd;
       border-radius: 4px;
       line-height: 30px;
-      margin: 5px 0 15px;
+      margin: 5px 0 0;
       padding: 5px 15px;
       color: #999;
       font-size: 16px;
+    }
+
+    span {
+      margin: 5px 0;
+      color: #999;
+      font-size: 12px;
     }
 
     button {
@@ -57,6 +64,11 @@ export const Content = styled.div`
       font-weight: bold;
       width: 100%;
       margin: 10px 0;
+      transition: background 300ms;
+
+      &:hover {
+        background: ${props => props.theme.dark.primary};
+      }
     }
   }
 
