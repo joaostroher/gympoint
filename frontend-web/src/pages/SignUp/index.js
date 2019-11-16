@@ -9,6 +9,11 @@ export default function SignIn() {
     <>
       <img src={logo} alt="GymPoint" />
       <form>
+        <label htmlFor="name">
+          Seu Nome
+          <input type="text" name="name" id="name" />
+        </label>
+
         <label htmlFor="email">
           Seu E-mail
           <input type="email" name="email" id="email" />
@@ -20,7 +25,7 @@ export default function SignIn() {
         </label>
 
         <button type="submit">Entrar no Sistema</button>
-        <Link to="/register">Ainda não tenho uma conta</Link>
+        <Link to="/login">Já tenho uma Conta</Link>
       </form>
     </>
   );
