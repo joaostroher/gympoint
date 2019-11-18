@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MdAdd } from 'react-icons/md';
 
-import api from '~/services/api';
-import { Container, Content } from './styles';
-
 import Toolbar from '~/components/Toolbar';
+import Table from '~/components/Table';
+import api from '~/services/api';
+
+import { Container } from './styles';
 
 export default function Students() {
+  const columns = useMemo(
+    () => [
+      { description: 'Nome', field: 'name', align: 'left' },
+      { description: 'Email', field: 'email', align: 'left' },
+      { description: 'Idade', field: 'age', align: 'center' },
+    ],
+    []
+  );
   const [students, setStudents] = useState([]);
   useEffect(() => {
     async function loadStudents() {
@@ -17,36 +26,21 @@ export default function Students() {
   }, []);
   return (
     <Container>
-      <Toolbar title="Gerenciando Alunos">
+      <Toolbar title="Alunos">
         <button type="button">
           <MdAdd size={24} /> CADASTRAR
         </button>
       </Toolbar>
-      <Content>
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Idade</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {students.map(student => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.email}</td>
-                <td>{student.age}</td>
-                <td>
-                  <button type="button">editar</button>
-                  <button type="button">apagar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Content>
+      <Table
+        columns={columns}
+        data={students}
+        renderActions={() => (
+          <>
+            <button type="button">editar</button>
+            <button type="button">apagar</button>
+          </>
+        )}
+      />
     </Container>
   );
 }
