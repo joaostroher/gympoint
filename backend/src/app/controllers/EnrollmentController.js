@@ -6,7 +6,20 @@ import Plan from '@/app/models/Plan';
 
 class EnrollmentController {
   async index(req, res) {
-    const enrollments = await Enrollment.findAll();
+    const enrollments = await Enrollment.findAll({
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['name'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['title'],
+        },
+      ],
+    });
     return res.json(enrollments);
   }
 
