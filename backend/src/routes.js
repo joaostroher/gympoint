@@ -26,18 +26,22 @@ routes.post(
 routes.use(authMiddleware);
 
 routes.get('/students', StudentController.index);
+routes.get('/students/:student_id', StudentController.show);
 routes.post('/students', StudentController.store);
 routes.put('/students/:student_id', StudentController.update);
+routes.delete('/students/:student_id', StudentController.delete);
 
 routes.get('/students/:student_id/checkins', CheckinController.index);
 routes.post('/students/:student_id/checkins', CheckinController.store);
 
 routes.get('/plans', PlanController.index);
+routes.get('/plans/:plan_id', PlanController.show);
 routes.post('/plans', PlanController.store);
 routes.put('/plans/:plan_id', PlanController.update);
 routes.delete('/plans/:plan_id', PlanController.destroy);
 
 routes.get('/enrollments', EnrollmentController.index);
+routes.get('/enrollments/:enrollment_id', EnrollmentController.show);
 routes.post('/enrollments', EnrollmentController.store);
 routes.put('/enrollments/:enrollment_id', EnrollmentController.update);
 routes.delete('/enrollments/:enrollment_id', EnrollmentController.destroy);

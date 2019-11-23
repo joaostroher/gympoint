@@ -5,22 +5,39 @@ import Student from '@/app/models/Student';
 import Plan from '@/app/models/Plan';
 
 class EnrollmentController {
+  static getDefaultInclude() {
+    return [
+      {
+        model: Student,
+        as: 'student',
+        attributes: ['name'],
+      },
+      {
+        model: Plan,
+        as: 'plan',
+        attributes: ['title'],
+      },
+    ];
+  }
+
   async index(req, res) {
     const enrollments = await Enrollment.findAll({
-      include: [
-        {
-          model: Student,
-          as: 'student',
-          attributes: ['name'],
-        },
-        {
-          model: Plan,
-          as: 'plan',
-          attributes: ['title'],
-        },
-      ],
+      include: EnrollmentController.getDefaultInclude(),
     });
     return res.json(enrollments);
+  }
+
+  async show(req, res) {
+    const { enrollment_id } = req.params;
+
+    const enrollment = await Enrollment.findByPk(enrollment_id, {
+      include: EnrollmentController.getDefaultInclude(),
+    });
+
+    if (!enrollment)
+      return res.status(404).json({ error: 'Resource not found' });
+
+    return res.status(200).json(enrollment);
   }
 
   async store(req, res) {

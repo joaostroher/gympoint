@@ -7,6 +7,21 @@ class StudentController {
     return res.json(students);
   }
 
+  async show(req, res) {
+    const { student_id } = req.params;
+    const student = await Student.findByPk(student_id);
+    if (!student) return res.status(404).json({ error: 'Resource not found' });
+    return res.json(student);
+  }
+
+  async delete(req, res) {
+    const { student_id } = req.params;
+    const student = await Student.findByPk(student_id);
+    if (!student) return res.status(404).json({ error: 'Resource not found' });
+    await student.destroy();
+    return res.status(200).end();
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
