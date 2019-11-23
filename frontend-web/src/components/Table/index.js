@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 
+import Spinner from '~/components/Spinner';
 import { Container } from './styles';
 
-export default function Table({ columns, data, renderActions }) {
+export default function Table({ columns, data, renderActions, loading }) {
   return (
     <Container>
       <table>
@@ -18,21 +19,24 @@ export default function Table({ columns, data, renderActions }) {
             {renderActions && <th> </th>}
           </tr>
         </thead>
-        <tbody>
-          {data.map(d => (
-            <tr key={d.id}>
-              {columns.map(c => (
-                <td key={d.id + c.field} className={`align-${c.align}`}>
-                  {c.render ? c.render(get(d, c.field)) : get(d, c.field)}
-                </td>
-              ))}
-              {renderActions && (
-                <td className="align-center">{renderActions(d)}</td>
-              )}
-            </tr>
-          ))}
-        </tbody>
+        {!loading && (
+          <tbody>
+            {data.map(d => (
+              <tr key={d.id}>
+                {columns.map(c => (
+                  <td key={d.id + c.field} className={`align-${c.align}`}>
+                    {c.render ? c.render(get(d, c.field)) : get(d, c.field)}
+                  </td>
+                ))}
+                {renderActions && (
+                  <td className="align-center">{renderActions(d)}</td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
+      {loading && <Spinner />}
     </Container>
   );
 }
@@ -48,9 +52,11 @@ Table.propTypes = {
   ).isRequired,
   data: PropTypes.arrayOf(PropTypes.object),
   renderActions: PropTypes.func,
+  loading: PropTypes.bool,
 };
 
 Table.defaultProps = {
   data: [],
   renderActions: null,
+  loading: false,
 };

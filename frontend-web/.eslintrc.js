@@ -41,7 +41,12 @@ module.exports = {
       "no-console": ["error", { allow: ["tron"] }],
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
-      "react/jsx-props-no-spreading": "off"
+      "react/jsx-props-no-spreading": "off",
+      "jsx-a11y/label-has-associated-control": [ 2, {
+        "labelAttributes": ["label"],
+        "controlComponents": ["Input"],
+        "depth": 3,
+      }],
     },
     settings: {
       "import/resolver": {

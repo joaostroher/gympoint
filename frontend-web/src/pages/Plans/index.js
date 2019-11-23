@@ -3,7 +3,9 @@ import { MdAdd } from 'react-icons/md';
 
 import Toolbar from '~/components/Toolbar';
 import Table from '~/components/Table';
+import Button from '~/components/Button';
 import api from '~/services/api';
+import history from '~/services/history';
 
 import { Container } from './styles';
 
@@ -26,28 +28,44 @@ export default function Plans() {
     ],
     []
   );
+  const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState([]);
   useEffect(() => {
     async function loadPlans() {
+      setLoading(true);
       const response = await api.get('plans');
       setPlans(response.data);
+      setLoading(false);
     }
     loadPlans();
   }, []);
+
+  async function handleDelete(planId) {
+    await api.delete(`/plans/${planId}`);
+    setPlans(plans.filter(plan => plan.id !== planId));
+  }
   return (
     <Container>
       <Toolbar title="Planos">
-        <button type="button">
+        <Button type="button">
           <MdAdd size={24} /> CADASTRAR
-        </button>
+        </Button>
       </Toolbar>
       <Table
         columns={columns}
         data={plans}
-        renderActions={() => (
+        loading={loading}
+        renderActions={plan => (
           <>
-            <button type="button">editar</button>
-            <button type="button">apagar</button>
+            <button
+              type="button"
+              onClick={() => history.push(`/plans/${plan.id}`)}
+            >
+              editar
+            </button>
+            <button type="button" onClick={() => handleDelete(plan.id)}>
+              apagar
+            </button>
           </>
         )}
       />

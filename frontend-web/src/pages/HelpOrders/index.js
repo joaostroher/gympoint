@@ -11,11 +11,14 @@ export default function HelpOrders() {
     () => [{ description: 'Aluno', field: 'student.name', align: 'left' }],
     []
   );
+  const [loading, setLoading] = useState(false);
   const [helpOrders, setHelpOrders] = useState([]);
   useEffect(() => {
     async function loadHelpOrders() {
+      setLoading(true);
       const response = await api.get('help-orders');
       setHelpOrders(response.data);
+      setLoading(false);
     }
     loadHelpOrders();
   }, []);
@@ -25,6 +28,7 @@ export default function HelpOrders() {
       <Table
         columns={columns}
         data={helpOrders}
+        loading={loading}
         renderActions={() => <button type="button">responder</button>}
       />
     </Container>

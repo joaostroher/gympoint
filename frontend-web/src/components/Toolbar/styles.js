@@ -16,21 +16,6 @@ export const Container = styled.div`
       margin-left: 10px;
     }
 
-    button {
-      border: 0;
-      background: ${props => props.theme.primary};
-      color: #fff;
-      padding: 5px 15px;
-      font-weight: bold;
-      border-radius: 5px;
-      display: inline-flex;
-      align-items: center;
-
-      svg {
-        margin: 0 5px 0 0;
-      }
-    }
-
     input {
       border-radius: 5px;
       border: 1px solid #ddd;
@@ -39,8 +24,6 @@ export const Container = styled.div`
       color: #999;
       &::placeholder {
         color: #999;
-      }
-      &:before {
       }
     }
   }

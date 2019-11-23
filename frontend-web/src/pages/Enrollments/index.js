@@ -5,12 +5,13 @@ import br from 'date-fns/locale/pt-BR';
 
 import Toolbar from '~/components/Toolbar';
 import Table from '~/components/Table';
+import Button from '~/components/Button';
+import history from '~/services/history';
 import api from '~/services/api';
 
 import { Container } from './styles';
 
 export default function Enrollments() {
-  const [plans, setPlans] = useState([]);
   const columns = useMemo(
     () => [
       { description: 'Aluno', field: 'student.name', align: 'left' },
@@ -43,26 +44,36 @@ export default function Enrollments() {
     ],
     []
   );
+  const [loading, setLoading] = useState(false);
+  const [plans, setPlans] = useState([]);
   useEffect(() => {
     async function loadPlans() {
+      setLoading(true);
       const response = await api.get('enrollments');
       setPlans(response.data);
+      setLoading(false);
     }
     loadPlans();
   }, []);
   return (
     <Container>
       <Toolbar title="Matrículas">
-        <button type="button">
+        <Button type="button" onClick={() => history.push('/enrollments/new')}>
           <MdAdd size={24} /> CADASTRAR
-        </button>
+        </Button>
       </Toolbar>
       <Table
         columns={columns}
         data={plans}
-        renderActions={() => (
+        loading={loading}
+        renderActions={enrollment => (
           <>
-            <button type="button">editar</button>
+            <button
+              type="button"
+              onClick={() => history.push(`/enrollments/${enrollment.id}`)}
+            >
+              editar
+            </button>
             <button type="button">apagar</button>
           </>
         )}
