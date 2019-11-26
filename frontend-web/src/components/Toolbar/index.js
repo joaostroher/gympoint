@@ -7,16 +7,17 @@ export default function Toolbar({ title, children }) {
   return (
     <Container>
       <h2>{title}</h2>
-      <div>{children}</div>
+      {children && <div>{children}</div>}
     </Container>
   );
 }
 
 Toolbar.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   title: PropTypes.string,
 };
 
 Toolbar.defaultProps = {
+  children: null,
   title: '',
 };

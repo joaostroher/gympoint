@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdAdd, MdCheckCircle } from 'react-icons/md';
 import { parseISO, format } from 'date-fns';
 import br from 'date-fns/locale/pt-BR';
@@ -6,8 +6,10 @@ import br from 'date-fns/locale/pt-BR';
 import Toolbar from '~/components/Toolbar';
 import Table from '~/components/Table';
 import Button from '~/components/Button';
+
 import history from '~/services/history';
 import api from '~/services/api';
+import { useDeleteConfirmation } from '~/hooks';
 
 import { Container } from './styles';
 
@@ -45,16 +47,30 @@ export default function Enrollments() {
     []
   );
   const [loading, setLoading] = useState(false);
-  const [plans, setPlans] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
+
   useEffect(() => {
     async function loadPlans() {
       setLoading(true);
       const response = await api.get('enrollments');
-      setPlans(response.data);
+      setEnrollments(response.data);
       setLoading(false);
     }
     loadPlans();
   }, []);
+
+  const handleDelete = useDeleteConfirmation(
+    useCallback(
+      async enrollmentId => {
+        await api.delete(`/enrollments/${enrollmentId}`);
+        setEnrollments(
+          enrollments.filter(enrollment => enrollment.id !== enrollmentId)
+        );
+      },
+      [enrollments]
+    )
+  );
+
   return (
     <Container>
       <Toolbar title="Matrículas">
@@ -64,7 +80,7 @@ export default function Enrollments() {
       </Toolbar>
       <Table
         columns={columns}
-        data={plans}
+        data={enrollments}
         loading={loading}
         renderActions={enrollment => (
           <>
@@ -74,7 +90,9 @@ export default function Enrollments() {
             >
               editar
             </button>
-            <button type="button">apagar</button>
+            <button type="button" onClick={() => handleDelete(enrollment.id)}>
+              apagar
+            </button>
           </>
         )}
       />

@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdAdd } from 'react-icons/md';
 
-import history from '~/services/history';
 import Toolbar from '~/components/Toolbar';
 import Table from '~/components/Table';
 import Button from '~/components/Button';
+
+import history from '~/services/history';
 import api from '~/services/api';
+import { useDeleteConfirmation } from '~/hooks';
 
 import { Container } from './styles';
 
@@ -20,6 +22,7 @@ export default function Students() {
   );
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     async function loadStudents() {
       setLoading(true);
@@ -30,10 +33,15 @@ export default function Students() {
     loadStudents();
   }, []);
 
-  async function handleDelete(studentId) {
-    await api.delete(`/students/${studentId}`);
-    setStudents(students.filter(student => student.id !== studentId));
-  }
+  const handleDelete = useDeleteConfirmation(
+    useCallback(
+      async studentId => {
+        await api.delete(`/students/${studentId}`);
+        setStudents(students.filter(student => student.id !== studentId));
+      },
+      [students]
+    )
+  );
 
   return (
     <Container>

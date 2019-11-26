@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import Toolbar from '~/components/Toolbar';
 import Table from '~/components/Table';
@@ -7,6 +9,7 @@ import api from '~/services/api';
 import { Container } from './styles';
 
 export default function HelpOrders() {
+  const HelpOrderSwal = withReactContent(Swal);
   const columns = useMemo(
     () => [{ description: 'Aluno', field: 'student.name', align: 'left' }],
     []
@@ -22,6 +25,18 @@ export default function HelpOrders() {
     }
     loadHelpOrders();
   }, []);
+
+  function handleDialogRensponse() {
+    HelpOrderSwal.fire({
+      title: <p>Confirmação?</p>,
+      html: 'Resposta',
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não',
+      reverseButtons: true,
+    }).then(() => {});
+  }
+
   return (
     <Container>
       <Toolbar title="Pedidos de Auxílio" />
@@ -29,7 +44,14 @@ export default function HelpOrders() {
         columns={columns}
         data={helpOrders}
         loading={loading}
-        renderActions={() => <button type="button">responder</button>}
+        renderActions={helpOrder => (
+          <button
+            type="button"
+            onClick={() => handleDialogRensponse(helpOrder)}
+          >
+            responder
+          </button>
+        )}
       />
     </Container>
   );

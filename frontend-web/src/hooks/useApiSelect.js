@@ -6,7 +6,7 @@ export default function useApiSelect(url, title) {
   const processData = useCallback(
     data => {
       return data.map(d => ({
-        id: d.id,
+        ...d,
         title: d[title],
       }));
     },

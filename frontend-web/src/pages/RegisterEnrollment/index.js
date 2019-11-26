@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MdCheck, MdChevronLeft } from 'react-icons/md';
-import { Input, Select } from '@rocketseat/unform';
+import { Select } from '@rocketseat/unform';
 import * as Yup from 'yup';
-import { parseISO } from 'date-fns';
+import { parseISO, addMonths, format } from 'date-fns';
 
 import { useApiSelect } from '~/hooks';
 import api from '~/services/api';
@@ -18,13 +18,14 @@ const schema = Yup.object().shape({
   plan_id: Yup.number()
     .integer()
     .required(),
-  start_date: Yup.date(),
-  end_date: Yup.date(),
+  start_date: Yup.date().required(),
 });
 
 export default function RegisterEnrollment() {
   const { enrollmentId } = useParams();
   const [enrollment, setEnrollment] = useState(null);
+  const [endDate, setEndDate] = useState('');
+  const [price, setPrice] = useState(0);
   const { data: students, loading: loadingStudents } = useApiSelect(
     'students',
     'name'
@@ -47,12 +48,37 @@ export default function RegisterEnrollment() {
     loadEnrollment();
   }, [enrollmentId]);
 
+  useEffect(() => {
+    if (enrollment && plans) {
+      const plan = plans.find(p => p.id === enrollment.plan_id);
+      if (plan) {
+        const newPrice = plan ? plan.duration * plan.price : 0;
+        setPrice(newPrice);
+        if (enrollment.start_date) {
+          const newEndDate = format(
+            addMonths(enrollment.start_date, plan.duration),
+            'dd/MM/yyyy'
+          );
+          setEndDate(newEndDate);
+        }
+      }
+    }
+  }, [enrollment, plans]);
+
+  function handleChangePlan(event) {
+    const planId = Number(event.target.value);
+    setEnrollment({ ...enrollment, plan_id: planId });
+  }
+
+  function handleChangeStartDate(date) {
+    setEnrollment({ ...enrollment, start_date: date });
+  }
+
   async function handleSubmit(data) {
     if (enrollmentId === 'new') await api.post('/enrollments', data);
     else await api.put(`/enrollments/${enrollmentId}`, data);
     history.goBack();
   }
-
   return (
     <Container>
       <Toolbar title="Cadstro de Matrículas">
@@ -67,7 +93,7 @@ export default function RegisterEnrollment() {
           <MdCheck size={24} /> SALVAR
         </Button>
       </Toolbar>
-      {enrollment && (
+      {enrollment && !loadingStudents && !loadingPlans && (
         <StyledForm
           id="enrollment"
           onSubmit={handleSubmit}
@@ -76,27 +102,28 @@ export default function RegisterEnrollment() {
         >
           <label>
             Aluno
-            <Select
-              name="student_id"
-              options={loadingStudents ? [] : students}
-            />
+            <Select name="student_id" options={students || []} />
           </label>
           <Grid columns={4}>
             <label>
               Plano
-              <Select name="plan_id" options={loadingPlans ? [] : plans} />
+              <Select
+                name="plan_id"
+                options={plans || []}
+                onChange={handleChangePlan}
+              />
             </label>
             <label>
               Date de Início
-              <DatePicker name="start_date" />
+              <DatePicker name="start_date" onChange={handleChangeStartDate} />
             </label>
             <label>
               Date de Término
-              <DatePicker name="end_date" disabled />
+              <input value={endDate} disabled />
             </label>
             <label>
               Valor Final
-              <Input name="price" disabled />
+              <input value={price} disabled />
             </label>
           </Grid>
         </StyledForm>

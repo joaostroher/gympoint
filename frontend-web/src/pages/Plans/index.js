@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdAdd } from 'react-icons/md';
 
 import Toolbar from '~/components/Toolbar';
 import Table from '~/components/Table';
 import Button from '~/components/Button';
+
 import api from '~/services/api';
 import history from '~/services/history';
+import { useDeleteConfirmation } from '~/hooks';
 
 import { Container } from './styles';
 
@@ -40,14 +42,20 @@ export default function Plans() {
     loadPlans();
   }, []);
 
-  async function handleDelete(planId) {
-    await api.delete(`/plans/${planId}`);
-    setPlans(plans.filter(plan => plan.id !== planId));
-  }
+  const handleDelete = useDeleteConfirmation(
+    useCallback(
+      async planId => {
+        await api.delete(`/plans/${planId}`);
+        setPlans(plans.filter(plan => plan.id !== planId));
+      },
+      [plans]
+    )
+  );
+
   return (
     <Container>
       <Toolbar title="Planos">
-        <Button type="button">
+        <Button type="button" onClick={() => history.push('/plans/new')}>
           <MdAdd size={24} /> CADASTRAR
         </Button>
       </Toolbar>
