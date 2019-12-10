@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 
 import Spinner from '~/components/Spinner';
-import { Container } from './styles';
+import { Container, TableAction } from './styles';
 
+export { TableAction };
 export default function Table({ columns, data, renderActions, loading }) {
   return (
     <Container>

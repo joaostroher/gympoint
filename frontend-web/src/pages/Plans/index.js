@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdAdd } from 'react-icons/md';
 
 import Toolbar from '~/components/Toolbar';
-import Table from '~/components/Table';
+import Table, { TableAction } from '~/components/Table';
 import Button from '~/components/Button';
 
 import api from '~/services/api';
@@ -65,15 +65,12 @@ export default function Plans() {
         loading={loading}
         renderActions={plan => (
           <>
-            <button
-              type="button"
-              onClick={() => history.push(`/plans/${plan.id}`)}
-            >
+            <TableAction onClick={() => history.push(`/plans/${plan.id}`)}>
               editar
-            </button>
-            <button type="button" onClick={() => handleDelete(plan.id)}>
+            </TableAction>
+            <TableAction error onClick={() => handleDelete(plan.id)}>
               apagar
-            </button>
+            </TableAction>
           </>
         )}
       />

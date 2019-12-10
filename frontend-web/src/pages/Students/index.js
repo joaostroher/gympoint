@@ -2,12 +2,13 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { MdAdd } from 'react-icons/md';
 
 import Toolbar from '~/components/Toolbar';
-import Table from '~/components/Table';
+import Table, { TableAction } from '~/components/Table';
 import Button from '~/components/Button';
+import SearchInput from '~/components/SearchInput';
 
 import history from '~/services/history';
 import api from '~/services/api';
-import { useDeleteConfirmation } from '~/hooks';
+import { useDeleteConfirmation, useDebounce } from '~/hooks';
 
 import { Container } from './styles';
 
@@ -22,16 +23,19 @@ export default function Students() {
   );
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState(null);
+
+  const debouncedQuery = useDebounce(query, 500);
 
   useEffect(() => {
-    async function loadStudents() {
+    async function loadStudents(q) {
       setLoading(true);
-      const response = await api.get('students');
+      const response = await api.get('students', { params: { q } });
       setStudents(response.data);
       setLoading(false);
     }
-    loadStudents();
-  }, []);
+    loadStudents(debouncedQuery);
+  }, [debouncedQuery]);
 
   const handleDelete = useDeleteConfirmation(
     useCallback(
@@ -43,12 +47,17 @@ export default function Students() {
     )
   );
 
+  const handleChangeSearch = event => {
+    setQuery(event.target.value);
+  };
+
   return (
     <Container>
       <Toolbar title="Alunos">
         <Button type="button" onClick={() => history.push(`/students/new`)}>
           <MdAdd size={24} /> CADASTRAR
         </Button>
+        <SearchInput placeholder="Buscar Aluno" onChange={handleChangeSearch} />
       </Toolbar>
       <Table
         columns={columns}
@@ -56,15 +65,14 @@ export default function Students() {
         loading={loading}
         renderActions={student => (
           <>
-            <button
-              type="button"
+            <TableAction
               onClick={() => history.push(`/students/${student.id}`)}
             >
               editar
-            </button>
-            <button type="button" onClick={() => handleDelete(student.id)}>
+            </TableAction>
+            <TableAction error onClick={() => handleDelete(student.id)}>
               apagar
-            </button>
+            </TableAction>
           </>
         )}
       />

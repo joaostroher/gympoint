@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { MdCheck, MdChevronLeft } from 'react-icons/md';
 import { Select } from '@rocketseat/unform';
 import * as Yup from 'yup';
-import { parseISO, addMonths, format } from 'date-fns';
+import { parseISO, addMonths, format, startOfDay } from 'date-fns';
 
 import { useApiSelect } from '~/hooks';
 import api from '~/services/api';
@@ -18,7 +18,9 @@ const schema = Yup.object().shape({
   plan_id: Yup.number()
     .integer()
     .required(),
-  start_date: Yup.date().required(),
+  start_date: Yup.date()
+    .required()
+    .min(startOfDay(new Date())),
 });
 
 export default function RegisterEnrollment() {
@@ -115,7 +117,11 @@ export default function RegisterEnrollment() {
             </label>
             <label>
               Date de Início
-              <DatePicker name="start_date" onChange={handleChangeStartDate} />
+              <DatePicker
+                name="start_date"
+                minDate={new Date()}
+                onChange={handleChangeStartDate}
+              />
             </label>
             <label>
               Date de Término

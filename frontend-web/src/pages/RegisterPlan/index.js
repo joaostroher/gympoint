@@ -25,13 +25,14 @@ export default function RegisterPlan() {
   const [plan, setPlan] = useState(null);
   const [total, setTotal] = useState(0);
 
-  function calculatePlanTotal(p) {
+  const calculatePlanTotal = useCallback(p => {
     try {
-      return Number(p.duration * p.price).toFixed(2);
+      const planTotal = Number(p.duration * p.price);
+      return Number.isNaN(planTotal) ? 0 : planTotal;
     } catch {
       return 0;
     }
-  }
+  }, []);
 
   const handleRecalcTotal = useCallback(
     e => {
@@ -39,7 +40,7 @@ export default function RegisterPlan() {
       setPlan(newPlan);
       setTotal(calculatePlanTotal(newPlan));
     },
-    [plan]
+    [calculatePlanTotal, plan]
   );
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export default function RegisterPlan() {
       }
     }
     loadPlan();
-  }, [planId]);
+  }, [calculatePlanTotal, planId]);
 
   async function handleSubmit(data) {
     if (planId === 'new') await api.post('/plans', data);
@@ -98,7 +99,7 @@ export default function RegisterPlan() {
             </label>
             <label>
               Preço Total
-              <input disabled value={total} />
+              <input disabled value={total.toFixed(2)} />
             </label>
           </Grid>
         </StyledForm>

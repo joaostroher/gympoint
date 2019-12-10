@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
+import HelpOrder from '~/components/HelpOrder';
 import Toolbar from '~/components/Toolbar';
-import Table from '~/components/Table';
+import Table, { TableAction } from '~/components/Table';
 import api from '~/services/api';
+import theme from '~/styles/theme';
 
 import { Container } from './styles';
 
@@ -16,25 +18,44 @@ export default function HelpOrders() {
   );
   const [loading, setLoading] = useState(false);
   const [helpOrders, setHelpOrders] = useState([]);
-  useEffect(() => {
-    async function loadHelpOrders() {
-      setLoading(true);
-      const response = await api.get('help-orders');
-      setHelpOrders(response.data);
-      setLoading(false);
-    }
-    loadHelpOrders();
+
+  const loadHelpOrders = useCallback(async () => {
+    setLoading(true);
+    const response = await api.get('help-orders');
+    setHelpOrders(response.data);
+    setLoading(false);
   }, []);
 
-  function handleDialogRensponse() {
+  useEffect(() => {
+    loadHelpOrders();
+  }, [loadHelpOrders]);
+
+  function handleDialogRensponse(helpOrder) {
+    let answer = '';
+
+    function handleChangeAnswer(event) {
+      answer = event.target.value;
+    }
+
     HelpOrderSwal.fire({
-      title: <p>Confirmação?</p>,
-      html: 'Resposta',
-      showCancelButton: true,
-      confirmButtonText: 'Sim',
-      cancelButtonText: 'Não',
-      reverseButtons: true,
-    }).then(() => {});
+      html: (
+        <HelpOrder
+          question={helpOrder.question}
+          onChange={handleChangeAnswer}
+        />
+      ),
+      confirmButtonText: 'Responder Aluno',
+      confirmButtonColor: theme.primary,
+      preConfirm: () => {
+        return answer.trim() !== '';
+      },
+      showLoaderOnConfirm: true,
+    }).then(async ({ value }) => {
+      if (value) {
+        await api.put(`/help-orders/${helpOrder.id}`, { answer });
+        await loadHelpOrders();
+      }
+    });
   }
 
   return (
@@ -45,12 +66,12 @@ export default function HelpOrders() {
         data={helpOrders}
         loading={loading}
         renderActions={helpOrder => (
-          <button
+          <TableAction
             type="button"
             onClick={() => handleDialogRensponse(helpOrder)}
           >
             responder
-          </button>
+          </TableAction>
         )}
       />
     </Container>

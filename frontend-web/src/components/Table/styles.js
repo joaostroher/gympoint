@@ -51,11 +51,14 @@ export const Container = styled.div`
         padding: 5px;
       }
     }
-
-    button {
-      background: transparent;
-      border: 0;
-      padding: 5px;
-    }
   }
+`;
+
+export const TableAction = styled.button.attrs({
+  type: 'button',
+})`
+  background: transparent;
+  border: 0;
+  padding: 5px;
+  color: ${props => (props.error ? '#DE3B3B' : '#4d85ee')};
 `;

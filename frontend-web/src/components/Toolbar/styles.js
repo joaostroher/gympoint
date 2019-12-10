@@ -12,19 +12,8 @@ export const Container = styled.div`
     display: inline-flex;
     align-items: center;
 
-    * {
+    & > * {
       margin-left: 10px;
-    }
-
-    input {
-      border-radius: 5px;
-      border: 1px solid #ddd;
-      height: 34px;
-      padding: 5px;
-      color: #999;
-      &::placeholder {
-        color: #999;
-      }
     }
   }
 `;

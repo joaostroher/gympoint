@@ -16,7 +16,6 @@ import RegisterEnrollment from '~/pages/RegisterEnrollment';
 export default function Routes() {
   return (
     <Switch>
-      <Route path="/" exact component={Home} />
       <Route path="/students" exact component={Students} />
       <Route path="/plans" exact component={Plans} />
       <Route path="/enrollments" exact component={Enrollments} />
@@ -32,7 +31,7 @@ export default function Routes() {
       <Route path="/login" exact component={SignIn} isPublic />
       <Route path="/register" exact component={SignUp} isPublic />
 
-      <Redirect to="/" />
+      <Redirect to="/students" />
     </Switch>
   );
 }

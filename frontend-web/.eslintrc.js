@@ -43,8 +43,8 @@ module.exports = {
       "react-hooks/exhaustive-deps": "warn",
       "react/jsx-props-no-spreading": "off",
       "jsx-a11y/label-has-associated-control": [ 2, {
-        "labelAttributes": ["label"],
-        "controlComponents": ["Input"],
+        "labelComponents": ["label"],
+        "controlComponents": ["Input", "Select", "DatePicker"],
         "depth": 3,
       }],
     },

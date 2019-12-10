@@ -4,7 +4,7 @@ import { parseISO, format } from 'date-fns';
 import br from 'date-fns/locale/pt-BR';
 
 import Toolbar from '~/components/Toolbar';
-import Table from '~/components/Table';
+import Table, { TableAction } from '~/components/Table';
 import Button from '~/components/Button';
 
 import history from '~/services/history';
@@ -84,15 +84,14 @@ export default function Enrollments() {
         loading={loading}
         renderActions={enrollment => (
           <>
-            <button
-              type="button"
+            <TableAction
               onClick={() => history.push(`/enrollments/${enrollment.id}`)}
             >
               editar
-            </button>
-            <button type="button" onClick={() => handleDelete(enrollment.id)}>
+            </TableAction>
+            <TableAction error onClick={() => handleDelete(enrollment.id)}>
               apagar
-            </button>
+            </TableAction>
           </>
         )}
       />
