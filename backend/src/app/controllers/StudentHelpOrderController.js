@@ -4,6 +4,9 @@ import Student from '@/app/models/Student';
 
 class StudentHelpOrderController {
   async index(req, res) {
+    const limit = 10;
+    const page = req.query.page || 1;
+
     const { student_id } = req.params;
 
     const student = await Student.findByPk(student_id);
@@ -15,6 +18,9 @@ class StudentHelpOrderController {
       where: {
         student_id,
       },
+      limit,
+      offset: (page - 1) * limit,
+      order: [['answer_at', 'desc'], ['created_at', 'desc']],
     });
 
     return res.json(helpOrders);

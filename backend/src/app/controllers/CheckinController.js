@@ -5,11 +5,16 @@ import Student from '@/app/models/Student';
 
 class CheckinController {
   async index(req, res) {
+    const limit = 15;
+    const page = req.query.page || 1;
+
     const { student_id } = req.params;
     const checkins = await Checkin.findAll({
       where: {
         student_id,
       },
+      limit,
+      offset: (page - 1) * limit,
       order: [['created_at', 'desc']],
     });
     return res.json(checkins);
@@ -35,7 +40,7 @@ class CheckinController {
 
     if (checkinsCount >= 5)
       return res
-        .status(400)
+        .status(429)
         .json({ error: 'Has reached the limit of 5 checkins in 7 days' });
 
     const checkin = await Checkin.create({

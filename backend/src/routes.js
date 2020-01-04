@@ -9,6 +9,7 @@ import EnrollmentController from '@/app/controllers/EnrollmentController';
 import CheckinController from '@/app/controllers/CheckinController';
 import HelpOrderController from '@/app/controllers/HelpOrderController';
 import StudentHelpOrderController from '@/app/controllers/StudentHelpOrderController';
+import StudentVerifyController from '@/app/controllers/StudentVerifyController';
 
 const routes = new Router();
 
@@ -25,6 +26,8 @@ routes.post(
 
 routes.get('/students/:student_id/checkins', CheckinController.index);
 routes.post('/students/:student_id/checkins', CheckinController.store);
+
+routes.get('/students/:student_id/verify', StudentVerifyController.show);
 
 routes.use(authMiddleware);
 
