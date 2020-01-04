@@ -7,7 +7,14 @@ export const Container = styled.View`
 `;
 
 export const List = styled.FlatList.attrs({
-  showsVerticalScrollBar: false,
+  showsVerticalScrollIndicator: false,
 })`
   margin: 10px 0px;
+`;
+
+export const LoaderInicator = styled.ActivityIndicator.attrs(props => ({
+  size: 'large',
+  color: props.theme.primary,
+}))`
+  margin: 10px 0;
 `;

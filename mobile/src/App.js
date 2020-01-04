@@ -1,13 +1,12 @@
 import React from 'react';
-import { ThemeProvider } from 'styled-components';
+import { useSelector } from 'react-redux';
 
-import theme from '~/styles/theme';
-import Routes from '~/routes';
+import createRoutes from '~/routes';
 
 export default function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <Routes />
-    </ThemeProvider>
-  );
+  const signed = useSelector(state => state.auth.signed);
+
+  const Routes = createRoutes(signed);
+
+  return <Routes />;
 }

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import { Wrapper, Container, Text } from './styles';
 
-export default function Button({ children, ...rest }) {
+export default function Button({ children, enabled, ...rest }) {
   return (
     <Wrapper>
-      <Container {...rest}>
+      <Container enabled={enabled} {...rest}>
         <Text>{children}</Text>
       </Container>
     </Wrapper>
@@ -15,8 +15,10 @@ export default function Button({ children, ...rest }) {
 
 Button.propTypes = {
   children: PropTypes.node,
+  enabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
   children: null,
+  enabled: true,
 };

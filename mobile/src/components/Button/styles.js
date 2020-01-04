@@ -6,7 +6,7 @@ export const Wrapper = styled.View`
 `;
 
 export const Container = styled(RectButton)`
-  background: ${props => props.theme.primary};
+  background: ${props => (props.enabled ? props.theme.primary : '#999')};
   height: 46px;
   border-radius: 4px;
 

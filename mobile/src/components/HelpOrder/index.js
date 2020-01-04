@@ -6,6 +6,7 @@ import locale from 'date-fns/locale/pt-BR';
 
 import {
   Container,
+  Wrapper,
   Info,
   Status,
   StatusText,
@@ -13,7 +14,7 @@ import {
   Question,
 } from './styles';
 
-export default function HelpOrder({ data }) {
+export default function HelpOrder({ data, onPress }) {
   const answered = useMemo(() => Boolean(data.answer_at), [data.answer_at]);
   const dateTimeParsed = useMemo(
     () =>
@@ -27,21 +28,23 @@ export default function HelpOrder({ data }) {
   );
 
   return (
-    <Container>
-      <Info>
-        <Status>
-          <Icon
-            name="check-circle"
-            size={16}
-            color={answered ? '#42CB59' : '#999'}
-          />
-          <StatusText answered={answered}>
-            {answered ? 'Respondido' : 'Sem resposta'}
-          </StatusText>
-        </Status>
-        <DateTime>{dateTimeParsed}</DateTime>
-      </Info>
-      <Question>{data.question}</Question>
+    <Container onPress={onPress}>
+      <Wrapper>
+        <Info>
+          <Status>
+            <Icon
+              name="check-circle"
+              size={16}
+              color={answered ? '#42CB59' : '#999'}
+            />
+            <StatusText answered={answered}>
+              {answered ? 'Respondido' : 'Sem resposta'}
+            </StatusText>
+          </Status>
+          <DateTime>{dateTimeParsed}</DateTime>
+        </Info>
+        <Question>{data.question}</Question>
+      </Wrapper>
     </Container>
   );
 }
@@ -52,4 +55,9 @@ HelpOrder.propTypes = {
     answer_at: PropTypes.string,
     created_at: PropTypes.string,
   }).isRequired,
+  onPress: PropTypes.func,
+};
+
+HelpOrder.defaultProps = {
+  onPress: null,
 };
