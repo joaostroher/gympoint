@@ -7,7 +7,7 @@ class StudentVerifyController {
       attributes: ['id'],
     });
     if (!student) return res.status(404).json({ error: 'Resource not found' });
-    return res.status(student);
+    return res.json(student);
   }
 }
 

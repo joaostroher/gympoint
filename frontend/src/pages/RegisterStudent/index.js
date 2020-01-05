@@ -10,17 +10,24 @@ import { Button, Toolbar, StyledForm, Grid } from '~/components';
 import { Container } from './styles';
 
 const schema = Yup.object().shape({
-  name: Yup.string().required(),
+  name: Yup.string()
+    .required()
+    .label('Nome'),
   email: Yup.string()
     .email()
     .required()
-    .label('Nome'),
+    .label('Email'),
   age: Yup.number()
     .integer()
     .positive()
-    .required(),
-  weight: Yup.number().required(),
-  height: Yup.number().required(),
+    .required()
+    .label('Idade'),
+  weight: Yup.number()
+    .required()
+    .label('Peso'),
+  height: Yup.number()
+    .required()
+    .label('Altura'),
 });
 
 export default function RegisterStudent() {
@@ -67,7 +74,7 @@ export default function RegisterStudent() {
         >
           <label>
             Nome Completo
-            <Input id="name" name="name" />
+            <Input id="name" name="name" autofocus="true" />
           </label>
           <label>
             Endereço de Email

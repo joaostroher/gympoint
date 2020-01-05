@@ -16,16 +16,22 @@ export default styled(Form)`
     margin-bottom: 10px;
   }
 
-  input {
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    height: 44px;
-    padding: 0px 10px;
-    color: #999;
-    margin-top: 5px;
-    &::placeholder {
+  *:not(.react-select__input) {
+    & > input {
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      height: 44px;
+      padding: 0px 10px;
       color: #999;
+      margin-top: 5px;
+      &::placeholder {
+        color: #999;
+      }
     }
+  }
+
+  .react-select-container {
+    margin-top: 5px;
   }
 
   span {

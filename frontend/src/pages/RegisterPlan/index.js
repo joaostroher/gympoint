@@ -10,14 +10,18 @@ import { Button, Toolbar, StyledForm, Grid } from '~/components';
 import { Container } from './styles';
 
 const schema = Yup.object().shape({
-  title: Yup.string().required(),
+  title: Yup.string()
+    .required()
+    .label('Título'),
   duration: Yup.number()
     .integer()
     .positive()
-    .required(),
+    .required()
+    .label('Duração'),
   price: Yup.number()
     .positive()
-    .required(),
+    .required()
+    .label('Preço'),
 });
 
 export default function RegisterPlan() {

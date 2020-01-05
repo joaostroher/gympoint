@@ -32,15 +32,24 @@ export default function Plans() {
   );
   const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState([]);
-  useEffect(() => {
-    async function loadPlans() {
-      setLoading(true);
+  const [pages, setPages] = useState(1);
+  const [selectedPage, setSelectedPage] = useState(1);
+
+  const loadPlans = useCallback(async page => {
+    setLoading(true);
+    try {
       const response = await api.get('plans');
-      setPlans(response.data);
+      setPlans(response.data.data);
+      setPages(response.data.pages);
+      setSelectedPage(page);
+    } finally {
       setLoading(false);
     }
-    loadPlans();
   }, []);
+
+  useEffect(() => {
+    loadPlans(1);
+  }, [loadPlans]);
 
   const handleDelete = useDeleteConfirmation(
     useCallback(
@@ -63,6 +72,9 @@ export default function Plans() {
         columns={columns}
         data={plans}
         loading={loading}
+        pages={pages}
+        page={selectedPage}
+        onPageChange={page => loadPlans(page)}
         renderActions={plan => (
           <>
             <TableAction onClick={() => history.push(`/plans/${plan.id}`)}>

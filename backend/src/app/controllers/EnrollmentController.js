@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { addMonths, parseISO, addMinutes } from 'date-fns';
+import { addMonths, parseISO, startOfDay } from 'date-fns';
 import Enrollment from '@/app/models/Enrollment';
 import Student from '@/app/models/Student';
 import Plan from '@/app/models/Plan';
@@ -21,10 +21,16 @@ class EnrollmentController {
   }
 
   async index(req, res) {
+    const limit = 10;
+    const page = req.query.page || 1;
+    const count = await Enrollment.count();
     const enrollments = await Enrollment.findAll({
       include: EnrollmentController.getDefaultInclude(),
+      limit,
+      offset: (page - 1) * limit,
     });
-    return res.json(enrollments);
+    // return res.json(enrollments);
+    return res.json({ pages: Math.ceil(count / limit), data: enrollments });
   }
 
   async show(req, res) {
@@ -45,7 +51,7 @@ class EnrollmentController {
       student_id: Yup.number().required(),
       plan_id: Yup.number().required(),
       start_date: Yup.date()
-        .min(addMinutes(new Date(), -1))
+        .min(startOfDay(new Date(), -1))
         .required(),
     });
 
@@ -82,7 +88,7 @@ class EnrollmentController {
     const schema = Yup.object().shape({
       student_id: Yup.number(),
       plan_id: Yup.number(),
-      start_date: Yup.date().min(addMinutes(new Date(), -1)),
+      start_date: Yup.date().min(startOfDay(new Date(), -1)),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -100,7 +106,7 @@ class EnrollmentController {
 
     const { student_id, plan_id, start_date } = {
       ...enrollment.dataValues,
-      ...req.body,
+      ...schema.cast(req.body),
     };
     const student = await Student.findByPk(student_id);
     if (!student)
@@ -114,7 +120,7 @@ class EnrollmentController {
         error: "Plan entered don't exists",
       });
 
-    const end_date = addMonths(parseISO(start_date), plan.duration);
+    const end_date = addMonths(start_date, plan.duration);
     const price = plan.duration * plan.price;
 
     await enrollment.update({

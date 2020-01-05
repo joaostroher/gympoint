@@ -2,7 +2,6 @@ import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 import Route from './Route';
 
-import Home from '~/pages/Home';
 import Students from '~/pages/Students';
 import Plans from '~/pages/Plans';
 import Enrollments from '~/pages/Enrollments';

@@ -24,18 +24,26 @@ export default function Students() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState(null);
+  const [pages, setPages] = useState(1);
+  const [selectedPage, setSelectedPage] = useState(1);
 
   const debouncedQuery = useDebounce(query, 500);
 
-  useEffect(() => {
-    async function loadStudents(q) {
-      setLoading(true);
-      const response = await api.get('students', { params: { q } });
-      setStudents(response.data);
+  const loadStudents = useCallback(async (q, page) => {
+    setLoading(true);
+    try {
+      const response = await api.get('students', { params: { q, page } });
+      setStudents(response.data.data);
+      setPages(response.data.pages);
+      setSelectedPage(page);
+    } finally {
       setLoading(false);
     }
-    loadStudents(debouncedQuery);
-  }, [debouncedQuery]);
+  }, []);
+
+  useEffect(() => {
+    loadStudents(debouncedQuery, 1);
+  }, [debouncedQuery, loadStudents]);
 
   const handleDelete = useDeleteConfirmation(
     useCallback(
@@ -47,9 +55,9 @@ export default function Students() {
     )
   );
 
-  const handleChangeSearch = event => {
+  function handleChangeSearch(event) {
     setQuery(event.target.value);
-  };
+  }
 
   return (
     <Container>
@@ -63,6 +71,9 @@ export default function Students() {
         columns={columns}
         data={students}
         loading={loading}
+        pages={pages}
+        page={selectedPage}
+        onPageChange={page => loadStudents(debouncedQuery, page)}
         renderActions={student => (
           <>
             <TableAction

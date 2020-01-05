@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import useApiGet from './useApiGet';
 
-export default function useApiSelect(url, title) {
+export default function useApiSelect(url, title, params = null) {
   const processData = useCallback(
     data => {
       return data.map(d => ({
@@ -12,7 +12,14 @@ export default function useApiSelect(url, title) {
     },
     [title]
   );
-  const { data, loading, error, response } = useApiGet(url, null, processData);
+
+  const config = useMemo(() => ({ params }), [params]);
+
+  const { data, loading, error, response } = useApiGet(
+    url,
+    config,
+    processData
+  );
 
   return { data, loading, error, response };
 }

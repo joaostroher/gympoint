@@ -6,6 +6,7 @@ import Toolbar from './Toolbar';
 import StyledForm from './StyledForm';
 import Grid from './Grid';
 import DatePicker from './DatePicker';
+import Select from './Select';
 
 export {
   Button,
@@ -16,4 +17,5 @@ export {
   StyledForm,
   Grid,
   DatePicker,
+  Select,
 };

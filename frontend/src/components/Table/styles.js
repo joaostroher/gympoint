@@ -1,6 +1,12 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const TableContainer = styled.div`
   width: 100%;
   padding: 20px;
   background: #fff;
@@ -61,4 +67,56 @@ export const TableAction = styled.button.attrs({
   border: 0;
   padding: 5px;
   color: ${props => (props.error ? '#DE3B3B' : '#4d85ee')};
+`;
+
+export const Pagination = styled.div`
+  margin: 5px 0;
+  display: flex;
+`;
+
+export const PaginationButton = styled.button.attrs({
+  type: 'button',
+})`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  background: ${props => (props.active ? props.theme.primary : '#fff')};
+  font-size: 18px;
+  height: 30px;
+  width: 30px;
+  margin: 0 1px;
+
+  ${props =>
+    props.first &&
+    css`
+      border-bottom-left-radius: 4px;
+      border-top-left-radius: 4px;
+    `}
+
+  ${props =>
+    props.last &&
+    css`
+      border-bottom-right-radius: 4px;
+      border-top-right-radius: 4px;
+    `}
+
+  cursor: ${props => (props.active || props.disabled ? 'default' : 'pointer')};
+  color: ${props => {
+    if (props.active) return '#fff';
+    if (props.disabled) return '#ddd';
+    return '#000';
+  }};
+  svg {
+    color: ${props => {
+      if (props.active) return '#fff';
+      if (props.disabled) return '#ddd';
+      return '#000';
+    }};
+  }
+`;
+
+export const NoData = styled.td`
+  text-align: center;
 `;

@@ -68,6 +68,7 @@ function CheckIn({ isFocused }) {
     try {
       const response = await api.post(`/students/${student}/checkins`);
       setCheckIns([response.data, ...checkIns]);
+      Alert.alert('Sucesso', 'Check-in realizado com sucesso!');
     } catch (err) {
       if (err.response.status === 429) {
         Alert.alert(

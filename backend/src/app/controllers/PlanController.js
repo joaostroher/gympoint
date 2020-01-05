@@ -3,8 +3,15 @@ import Plan from '@/app/models/Plan';
 
 class PlanController {
   async index(req, res) {
-    const plans = await Plan.findAll();
-    return res.json(plans);
+    const limit = 10;
+    const page = req.query.page || 1;
+    const count = await Plan.count();
+    const plans = await Plan.findAll({
+      limit,
+      offset: (page - 1) * limit,
+    });
+    // return res.json(plans);
+    return res.json({ pages: Math.ceil(count / limit), data: plans });
   }
 
   async show(req, res) {

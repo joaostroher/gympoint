@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, Image } from 'react-native';
 import { useDispatch } from 'react-redux';
+import * as Yup from 'yup';
 
 import { signInRequest } from '~/store/modules/auth/actions';
 import logo from '~/assets/logo.png';
@@ -12,13 +13,16 @@ export default function Sign() {
   const dispatch = useDispatch();
   const [student, setStudent] = useState('');
 
-  function handleSubmit() {
-    const parsedStudent = Number.parseFloat(student, 10);
-    console.tron.log(parsedStudent);
-    if (parsedStudent && Number.isInteger(parsedStudent) && parsedStudent > 0) {
+  async function handleSubmit() {
+    try {
+      await Yup.number('Informe um número válido!')
+        .integer('Informe um número inteiro válido!')
+        .min(1, 'Informe um número maior ou igual a 1!')
+        .typeError('Informe um número válido!')
+        .validate(student);
       dispatch(signInRequest(student));
-    } else {
-      Alert.alert('Ocorreu um erro ao acessar', 'Valor inválido!');
+    } catch (err) {
+      Alert.alert('Ocorreu um erro ao acessar', err.message);
     }
   }
 

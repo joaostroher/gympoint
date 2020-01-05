@@ -48,16 +48,24 @@ export default function Enrollments() {
   );
   const [loading, setLoading] = useState(false);
   const [enrollments, setEnrollments] = useState([]);
+  const [pages, setPages] = useState(1);
+  const [selectedPage, setSelectedPage] = useState(1);
 
-  useEffect(() => {
-    async function loadPlans() {
-      setLoading(true);
+  const loadEnrollments = useCallback(async page => {
+    setLoading(true);
+    try {
       const response = await api.get('enrollments');
-      setEnrollments(response.data);
+      setEnrollments(response.data.data);
+      setPages(response.data.pages);
+      setSelectedPage(page);
+    } finally {
       setLoading(false);
     }
-    loadPlans();
   }, []);
+
+  useEffect(() => {
+    loadEnrollments(1);
+  }, [loadEnrollments]);
 
   const handleDelete = useDeleteConfirmation(
     useCallback(
@@ -82,6 +90,9 @@ export default function Enrollments() {
         columns={columns}
         data={enrollments}
         loading={loading}
+        pages={pages}
+        page={selectedPage}
+        onPageChange={page => loadEnrollments(page)}
         renderActions={enrollment => (
           <>
             <TableAction
