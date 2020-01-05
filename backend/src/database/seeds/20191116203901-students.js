@@ -3,7 +3,7 @@ const faker = require('faker/locale/pt_BR');
 module.exports = {
   up: queryInterface => {
     const students = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
       students.push({
         name: faker.name.findName(),
         email: faker.internet.email().toLowerCase(),

@@ -38,7 +38,7 @@ export default function Plans() {
   const loadPlans = useCallback(async page => {
     setLoading(true);
     try {
-      const response = await api.get('plans');
+      const response = await api.get('plans', { params: { page } });
       setPlans(response.data.data);
       setPages(response.data.pages);
       setSelectedPage(page);

@@ -113,7 +113,10 @@ export default function RegisterEnrollment() {
 
   async function loadStudents(q) {
     const response = await api.get('students', { params: { q } });
-    return response.data.map(student => ({ ...student, title: student.name }));
+    return response.data.map(student => ({
+      ...student,
+      title: student.name,
+    }));
   }
 
   return (

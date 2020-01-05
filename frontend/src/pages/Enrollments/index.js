@@ -54,7 +54,7 @@ export default function Enrollments() {
   const loadEnrollments = useCallback(async page => {
     setLoading(true);
     try {
-      const response = await api.get('enrollments');
+      const response = await api.get('enrollments', { params: { page } });
       setEnrollments(response.data.data);
       setPages(response.data.pages);
       setSelectedPage(page);

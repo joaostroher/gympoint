@@ -1,8 +1,12 @@
 import * as Yup from 'yup';
 import { addMonths, parseISO, startOfDay } from 'date-fns';
+
 import Enrollment from '@/app/models/Enrollment';
 import Student from '@/app/models/Student';
 import Plan from '@/app/models/Plan';
+
+import Queue from '@/lib/Queue';
+import EnrollmentNotification from '@/app/jobs/EnrollmentNotification';
 
 class EnrollmentController {
   static getDefaultInclude() {
@@ -21,16 +25,17 @@ class EnrollmentController {
   }
 
   async index(req, res) {
-    const limit = 10;
-    const page = req.query.page || 1;
+    const { page, pagination } = req;
     const count = await Enrollment.count();
     const enrollments = await Enrollment.findAll({
       include: EnrollmentController.getDefaultInclude(),
-      limit,
-      offset: (page - 1) * limit,
+      ...pagination,
     });
-    // return res.json(enrollments);
-    return res.json({ pages: Math.ceil(count / limit), data: enrollments });
+    return res.json(
+      page
+        ? { pages: Math.ceil(count / pagination.limit), data: enrollments }
+        : enrollments
+    );
   }
 
   async show(req, res) {
@@ -79,6 +84,12 @@ class EnrollmentController {
       ...req.body,
       end_date,
       price,
+    });
+
+    Queue.add(EnrollmentNotification.key, {
+      enrollment,
+      student,
+      plan,
     });
 
     return res.status(201).json(enrollment);

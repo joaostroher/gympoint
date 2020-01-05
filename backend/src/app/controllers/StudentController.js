@@ -4,8 +4,7 @@ import Student from '@/app/models/Student';
 
 class StudentController {
   async index(req, res) {
-    const limit = 10;
-    const page = req.query.page || 1;
+    const { page, pagination } = req;
     const query = req.query.q;
     const where = query
       ? {
@@ -16,11 +15,14 @@ class StudentController {
       : null;
     const count = await Student.count({ where });
     const students = await Student.findAll({
-      where,
-      limit,
-      offset: (page - 1) * limit,
+      ...where,
+      ...pagination,
     });
-    return res.json({ pages: Math.ceil(count / limit), data: students });
+    return res.json(
+      page
+        ? { pages: Math.ceil(count / pagination.limit), data: students }
+        : students
+    );
   }
 
   async show(req, res) {
