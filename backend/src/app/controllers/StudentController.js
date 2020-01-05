@@ -15,7 +15,7 @@ class StudentController {
       : null;
     const count = await Student.count({ where });
     const students = await Student.findAll({
-      ...where,
+      where,
       ...pagination,
     });
     return res.json(
