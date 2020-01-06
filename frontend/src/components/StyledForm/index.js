@@ -37,6 +37,8 @@ export default styled(Form)`
   span {
     font-weight: normal;
     text-transform: none;
+    color: #B00;
+    margin-top: 2px;
   }
 
   select {
